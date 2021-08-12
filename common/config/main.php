@@ -22,7 +22,8 @@ return [
             'enableStrictParsing' => true,
             'rules' => [
                 '/' => 'site/index',
-                'login' => 'site/login',
+                'login' => 'site/login', #авторизация
+                'signup' => 'site/signup', #регистрация
             ],
         ],
     ],
