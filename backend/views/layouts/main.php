@@ -45,6 +45,9 @@ AppAsset::register($this);
                      <span>
                          <img src="asset/images/logo-sm.png" alt="logo-small" class="logo-sm">
                      </span>
+                     <span>
+                         <img src="asset/images/logo-lg.png" alt="logo-large" class="logo-lg">
+                     </span>
                 </a>
             </div>
 
