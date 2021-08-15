@@ -686,6 +686,20 @@ small {
   border-radius: 3px;
 }
 
+.page-wrapper-front .page-wrapper-inner-front {
+  background-color: #f2f5f7;
+  padding: 80px;
+}
+
+.page-content-front {
+  width: 100%;
+  position: relative;
+  min-height: calc(100vh - 70px);
+  padding: 0 10px 60px;
+  /*margin-top: -70px;*/
+}
+
+
 .page-wrapper .page-wrapper-inner {
   background-color: #f2f5f7;
   padding: 0 80px;

@@ -21,7 +21,8 @@ return [
             'showScriptName' => false,
             'enableStrictParsing' => true,
             'rules' => [
-                '/' => 'site/index',
+                '/' => 'site/index', #главная (без авторизации)
+                'index' => 'site/index-auth', #главная (после авторизации)
                 'login' => 'site/login', #авторизация
                 'signup' => 'site/signup', #регистрация
             ],

@@ -17,13 +17,14 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error', 'index'],
+                        'actions' => ['login','index'],
                         'allow' => true,
+                        'roles' => ['?'], # гость
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout','error','index-auth'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@'], #авторизованный пользователь
                     ],
                 ],
             ],
@@ -47,6 +48,7 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        $this->layout = 'blank';
         return $this->render('index');
     }
 
