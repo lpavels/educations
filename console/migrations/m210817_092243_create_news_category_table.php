@@ -2,18 +2,16 @@
 
 use yii\db\Migration;
 
-class m210815_110634_create_news_categogy_table extends Migration
+class m210817_092243_create_news_category_table extends Migration
 {
     public function safeUp()
     {
-        $this->createTable('{{%news_categogy}}', [
+        $this->createTable('{{%news_category}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string(255)->notNull(),
-            'created_user_id' => $this->integer()->notNull(),
             'created_at' => $this->timestamp()->notNull(),
-            'updated_user_id' => $this->integer()->notNull(),
-            'updated_at' => $this->timestamp(),
         ]);
+        $this->addCommentOnTable('news_category','Категории новостей');
     }
 
     public function safeDown()

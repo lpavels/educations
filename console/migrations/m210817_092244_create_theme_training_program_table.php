@@ -2,18 +2,16 @@
 
 use yii\db\Migration;
 
-class m210815_110658_create_theme_training_program_table extends Migration
+class m210817_092244_create_theme_training_program_table extends Migration
 {
     public function safeUp()
     {
         $this->createTable('{{%theme_training_program}}', [
             'id' => $this->primaryKey(),
-            'name' => $this->string(255)->notNull(),
-            'created_user_id' => $this->integer()->notNull(),
+            'name' => $this->string(255)->notNull()->comment('Название темы обучения'),
             'created_at' => $this->timestamp()->notNull(),
-            'updated_user_id' => $this->integer()->notNull(),
-            'updated_at' => $this->timestamp(),
         ]);
+        $this->addCommentOnTable('theme_training_program','Темы обучающих программ');
     }
 
     public function safeDown()
