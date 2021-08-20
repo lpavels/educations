@@ -6,9 +6,6 @@ use backend\assets\AppAsset;
 use yii\helpers\Html;
 
 AppAsset::register($this);
-
-//$this->registerCssFile('@web/css/site.css');
-
 ?>
 <?php $this->beginPage() ?>
     <!DOCTYPE html>
