@@ -1,11 +1,35 @@
-/*
-* Theme: Frogetor - Responsive Bootstrap 4 Admin Dashboard
-* Author: Mannatthemes
-* File: Icons
-*/
+/* MaterialDesignIcons.com */
+@font-face {
+  font-family: "Material Design Icons";
+  src: url("../fonts/materialdesignicons-webfont.eot?v=3.2.89");
+  src: url("../fonts/materialdesignicons-webfont.eot?#iefix&v=3.2.89") format("embedded-opentype"), url("../fonts/materialdesignicons-webfont.woff2?v=3.2.89") format("woff2"), url("../fonts/materialdesignicons-webfont.woff?v=3.2.89") format("woff"), url("../fonts/materialdesignicons-webfont.ttf?v=3.2.89") format("truetype"), url("../fonts/materialdesignicons-webfont.svg?v=3.2.89#materialdesigniconsregular") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
 
-@import "icons/font-awesome/fontawesome.scss";
-@import "icons/material-design/materialdesignicons.scss";
-@import "icons/themify/themify-icons.scss";
-@import "icons/dripicons/dripicons.scss";
-@import "icons/typicons/typicons.scss";
+.mdi:before,
+.mdi-set {
+  display: inline-block;
+  font: normal normal normal 24px/1 "Material Design Icons";
+  font-size: inherit;
+  text-rendering: auto;
+  line-height: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.mdi-account-outline:before {
+  content: "\F013";
+}
+
+.mdi-lock:before {
+  content: "\F33E";
+}
+
+.mdi-email-outline:before {
+  content: "\F1F0";
+}
+
+.mdi-key:before {
+  content: "\F306";
+}

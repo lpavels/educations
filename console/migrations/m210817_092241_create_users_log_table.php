@@ -15,6 +15,7 @@ class m210817_092241_create_users_log_table extends Migration
             'primary_key' => $this->integer()->notNull(),
             'comment' => $this->string()->notNull(),
             'created_at' => $this->timestamp()->notNull(),
+            'created_ip' => $this->string(15)->notNull(),
         ]);
         $this->addCommentOnTable('users_log','Лог действий пользователя');
 

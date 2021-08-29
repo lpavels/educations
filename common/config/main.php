@@ -9,6 +9,10 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'ComponetSite' => [
+            'class' => 'common\models\ComponetSite',
+        ],
+
         #'authManager' => [
         #    'class' => 'yii\rbac\DbManager',
         #],
@@ -22,12 +26,22 @@ return [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'rules' => [
                 '/' => 'site/index', #главная (без авторизации)
                 'index' => 'site/index-auth', #главная (после авторизации)
                 'login' => 'site/login', #авторизация
                 'signup' => 'site/signup', #регистрация
+                'welcome' => 'site/welcome', #добро пожаловать
+
+                'email-confirm' => 'site/email-confirm', #подтверждение электронной почты
+                'confirm-email' => 'site/confirm-email', #страница подтверждения email
+
+                'forgot-password' => 'site/forgot-password', #страница "забыли пароль?"
+                'confirm-password' => 'site/confirm-password', #страница подтверждения отправки и смены пароля
+
+
+                'reset-password' => 'site/reset-password',  #страница изменения пароля -> "забыли пароль?"
             ],
         ],
     ],
