@@ -14,9 +14,9 @@ class m210817_092245_create_news_table extends Migration
             'small_text' => $this->string(255)->notNull()->unique()->comment('Краткая новость'),
             'full_text' => $this->text()->notNull()->unique()->comment('Полная новость'),
             'sequence_number' => $this->integer()->notNull()->comment('Порядковый номер новости'),
-            'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('0-не отображается, 1 - отображается'),
-            'created_at' => $this->timestamp()->notNull(),
-            'updated_at' => $this->timestamp(),
+            'status' => $this->boolean()->notNull()->defaultValue(0)->comment('0-не отображается, 1 - отображается'),
+            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
+            'updated_at' => $this->timestamp()->defaultValue(null)->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
         $this->addCommentOnTable('news','Новости');
 

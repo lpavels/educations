@@ -10,7 +10,7 @@ class m210817_092247_create_training_program_table extends Migration
             'id' => $this->primaryKey(),
             'theme_training_program_id' => $this->integer()->notNull()->comment('ID темы обучающей программы'),
             'name' => $this->string()->notNull()->comment('Название обучающей программы'),
-            'created_at' => $this->timestamp()->notNull(),
+            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
         ]);
         $this->addCommentOnTable('training_program','Обучающие программы');
 

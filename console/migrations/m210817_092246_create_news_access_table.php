@@ -10,7 +10,7 @@ class m210817_092246_create_news_access_table extends Migration
             'id' => $this->primaryKey(),
             'news_id' => $this->integer()->notNull(),
             'user_role_id' => $this->integer()->notNull(),
-            'created_at' => $this->timestamp()->notNull(),
+            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
         ]);
         $this->addCommentOnTable('news_access','Права доступа к новостям');
 
