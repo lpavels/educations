@@ -43,8 +43,19 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+
+            if (!$user){
+                $this->addError($attribute, 'Неверный логин или пароль.');
+            } elseif ($user == User::STATUS_INACTIVE){
+                Yii::$app->session->setFlash('error', 'Подтвердите электронную почту');
+                $this->addError($attribute, 'Подтвердите электронную почту');
+            } elseif ($user == User::STATUS_BLOCKED){
+                $reason = BlockedUsers::findOne(['user_id'=>$user->id,'status'=>1])->orderBy(['id'=>SORT_DESC])->reason;
+                Yii::$app->session->setFlash('error', 'Аккаунт заблокирован за ' .$reason);
+                $this->addError($attribute, 'Аккаунт заблокирован');
+            } elseif ($user == User::STATUS_DELETED){
+                Yii::$app->session->setFlash('error', 'Пользователь отозвал согласие на обработку персональных данных.');
+                $this->addError($attribute, 'Аккаунт заблокирован.');
             }
         }
     }

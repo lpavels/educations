@@ -29,7 +29,7 @@ $this->title = 'Авторизация';
 
     <div class="input-form">
         <div class="icons"><i class="mdi mdi-lock"></i></div>
-        <?= $form->field($model, 'password', ['options' => ['class' => 'input-window']])->textInput(['class' => 'form-control', 'placeholder' => 'Введите пароль'/*,'autofocus' => true*/])->label('Пароль') ?>
+        <?= $form->field($model, 'password', ['options' => ['class' => 'input-window']])->passwordInput(['class' => 'form-control', 'placeholder' => 'Введите пароль'/*,'autofocus' => true*/])->label('Пароль') ?>
     </div>
 
     <div class="input-form">

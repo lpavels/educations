@@ -58,6 +58,10 @@ return [
             ],
         ],
         */
+
+        'userHelp'=>[
+            'class'=>'backend\components\UserHelp'
+        ]
     ],
     'params' => $params,
 ];

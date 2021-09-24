@@ -8,9 +8,10 @@ class m210817_092242_create_admins_log_table extends Migration
     {
         $this->createTable('{{%admins_log}}', [
             'id' => $this->primaryKey(),
-            'user_id' => $this->integer()->notNull(),
+            'user_id' => $this->integer()->notNull()->comment('Какой пользователь'),
+            'user' => $this->integer()->notNull()->comment('Какому пользователю'),
             'table' => $this->string()->notNull()->comment('Название таблицы'),
-            'primary_key' => $this->integer()->notNull()->comment('ID в таблице'),
+            'primary_key' => $this->integer()->notNull()->comment('id записи в таблице'),
             'comment' => $this->string()->notNull(),
             'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'created_ip' => $this->string(15)->notNull(),
@@ -23,12 +24,25 @@ class m210817_092242_create_admins_log_table extends Migration
             'admins_log',
             'user_id'
         );
+        $this->createIndex(
+            'idx-admins_log-user',
+            'admins_log',
+            'user'
+        );
 
         // add foreign key for table `admins_log`
         $this->addForeignKey(
             'fk-admins_log-user_id',
             'admins_log',
             'user_id',
+            'user',
+            'id',
+            'CASCADE'
+        );
+        $this->addForeignKey(
+            'fk-admins_log-user',
+            'admins_log',
+            'user',
             'user',
             'id',
             'CASCADE'

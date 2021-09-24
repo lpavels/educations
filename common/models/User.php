@@ -29,7 +29,24 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_BLOCKED = 5;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
+    const ROLE_DEFAULT = 2; #пользователь
 
+
+    public static function userStatus()
+    {
+        return [
+            self::STATUS_DELETED => 'Удален',
+            self::STATUS_BLOCKED => 'Заблокирован',
+            self::STATUS_INACTIVE => 'Почта не подтверждена',
+            self::STATUS_ACTIVE => 'Активен',
+        ];
+    }
+
+    public static function getUserStatus($id, $default = 'unknown')
+    {
+        $role = static::userStatus();
+        return isset($role[$id]) ? $role[$id] : $default;
+    }
 
     /**
      * {@inheritdoc}
@@ -84,7 +101,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username/*, 'status' => self::STATUS_ACTIVE*/]);
     }
 
     /**
@@ -95,7 +112,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByPasswordResetToken($token)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
+        if (!static::isPasswordResetTokenValid($token))
+        {
             return null;
         }
 
@@ -111,7 +129,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token verify email token
      * @return static|null
      */
-    public static function findByVerificationToken($token) {
+    public static function findByVerificationToken($token)
+    {
         return static::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
@@ -126,11 +145,12 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function isPasswordResetTokenValid($token)
     {
-        if (empty($token)) {
+        if (empty($token))
+        {
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -210,5 +230,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function getAuthItem($u_id)
+    {
+        return AuthItem::findOne($u_id)->description;
+    }
+    public function getAuthRole()
+    {
+        return AuthItem::findOne(Yii::$app->user->id)->name;
     }
 }

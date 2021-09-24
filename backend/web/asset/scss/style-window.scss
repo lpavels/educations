@@ -1,0 +1,136 @@
+@import "variables";
+@import "check-radio";
+@import "alerts";
+@import "background-color";
+@import "buttons";
+@import "text-color";
+
+html {
+  position: relative;
+  min-height: 100%;
+  background-color: #f2f5f7;
+}
+
+/*layouts window*/
+.div-centered {
+  margin: 10% 10px 0 10px; /*сверху, справа, снизу, слева.*/
+  width: 100%;
+  border-radius: 7px; /* Радиус скругления */
+  border: 1px solid #dbdbdb; /* рамка */
+  box-shadow: 0 4px 16px #ccc; /*Тень элемента. 0 - смещение Х, 4 - смещение Y, 16 - степень размытия, #ccc - цвет.*/
+}
+
+.div-window {
+  padding: 10px;
+}
+
+div .logo {
+  width: 65px;
+  margin: 0 0 0 10px; /*сверху, справа, снизу, слева.*/
+}
+
+div .logo-text {
+  margin: 0 0 15px 0; /*сверху, справа, снизу, слева.*/
+}
+
+div .btn-rounding {
+  border-radius: 30px;
+}
+
+form {
+  .input-form {
+    display: flex;
+    margin: 0 0 23px 0;
+
+    .icons {
+      width: 37px;
+      height: 37px;
+      border-radius: 7px;
+      margin: 24px 0 0 0;
+      padding: 7px 0 0 11px;
+      background: #E9ECEF;
+    }
+
+    .input-window {
+      width: 100%;
+
+      [aria-invalid="true"] {
+        border: 1px solid #ec408f;
+      }
+
+      label {
+        margin: -33px;
+      }
+
+      input {
+      }
+    }
+  }
+
+  .help-block {
+    color: red;
+  }
+
+  button {
+    margin-top: 10px;
+  }
+
+  .text-muted {
+    color: #98a6ad !important;
+  }
+
+  .font-13 {
+    font-size: 13px !important;
+  }
+}
+/*END layouts window*/
+
+
+
+@media (max-width: 491px) {
+  /*layouts window*/
+  div .logo {
+    margin: 0 0 0 32%;
+  }
+
+  div .logo-text {
+    text-align: center;
+    margin: -5px 0 0px 0; /*сверху, справа, снизу, слева.*/
+  }
+  /*END layouts window*/
+
+}
+@media (max-width: 680px) {
+
+}
+@media (max-width: 767px) {
+
+}
+@media (max-width: 1024px) {
+
+}
+@media (min-width: 1024px) {
+  /*layouts window*/
+  .div-centered {
+    margin: 7% 0 0 24%; /*сверху, справа, снизу, слева.*/
+    width: 47%;
+    border-radius: 7px; /* Радиус скругления */
+    border: 1px solid #dbdbdb; /* рамка */
+    box-shadow: 0 4px 16px #ccc; /*Тень элемента. 0 - смещение Х, 4 - смещение Y, 16 - степень размытия, #ccc - цвет.*/
+  }
+  div .logo {
+    width: 65px;
+    margin: 0 0 15px 0; /*сверху, справа, снизу, слева.*/
+  }
+  div .logo-text {
+    margin: 0 0 15px 0; /*сверху, справа, снизу, слева.*/
+  }
+  /*END layouts window*/
+}
+
+
+@media (max-width: 1200px) {
+
+}
+
+

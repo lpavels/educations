@@ -14,10 +14,11 @@ class m130524_201442_init extends Migration
 
         $this->createTable('{{%user}}', [
             'id' => $this->primaryKey(),
+            'auth_item_id' => $this->integer()->comment('id роли пользователя'),
             'key_login' => $this->string()->unique()->comment('Идентификационный номер'),
             'username' => $this->string()->notNull()->unique()->comment('Логин'),
-            'email' => $this->string()->notNull()->unique()->comment('Электронная почта (необходима для восстановления'),
-            'email_confirm_token' => $this->string()->unique()->comment('Код подтверждения почты'),
+            'email' => $this->string()->notNull()->unique()->comment('Электронная почта (необходима для восстановления)'),
+            'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Статус пользователя (активен/неактивен)'),
             'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at' => $this->timestamp()->defaultValue(null)->append('ON UPDATE CURRENT_TIMESTAMP'),
             'auth_key' => $this->string(32)->notNull(),

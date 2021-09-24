@@ -55,7 +55,6 @@ class SignupForm extends Model
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
-        $user->email_confirm_token = Yii::$app->security->generateRandomString() . '_' . time();
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
@@ -98,7 +97,7 @@ class SignupForm extends Model
 
     public function forgotPassword($user){
 
-        $user->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+        $user->generatePasswordResetToken();
         return $user->save() && $this->sendConfirmResetPassword($user);
     }
 
@@ -128,7 +127,16 @@ class SignupForm extends Model
     {
         $user->setPassword($this->password);//изменение пароля
         $user->generateAuthKey(); //изменение auth_key для выхода со всех устройств
-        $user->password_reset_token = null;
+        $user->removePasswordResetToken();
+
+        $userLog = new UsersLog();
+        $userLog->user_id=Yii::$app->user->id;
+        $userLog->user=Yii::$app->user->id;
+        $userLog->table='user';
+        $userLog->primary_key=$user->id;
+        $userLog->comment='Изменение пароля через раздел "Забыли пароль"';
+        $userLog->save();
+
 
         return $user->save(false);
     }

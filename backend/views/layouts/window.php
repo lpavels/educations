@@ -6,6 +6,7 @@ use yii\helpers\Html;
 
 $flash = Yii::$app->session->getAllFlashes();
 ?>
+
 <?php $this->beginPage() ?>
     <!DOCTYPE html>
     <html lang="<?= Yii::$app->language ?>">
@@ -18,7 +19,7 @@ $flash = Yii::$app->session->getAllFlashes();
 
         <!-- App css -->
         <link href="asset/css/bootstrap5.min.css" rel="stylesheet" type="text/css"/>
-        <link href="asset/css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="asset/css/style-window.css" rel="stylesheet" type="text/css"/>
         <link href="asset/css/icons.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>

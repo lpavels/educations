@@ -45,7 +45,7 @@ $this->title = 'Регистрация';
         </div>
 
         <div class="input-form">
-            <?= $form->field($model, 'check', ['template' => "<div class=\"check\"><input type=\"checkbox\" class=\"form-check-input\"/> Регистрируясь, вы соглашаетесь с \"<a href=\"#\">Условиями использования</a>\"</div>\n<div>{error}</div>"])->checkbox()->label(false)?>
+            <?= $form->field($model, 'check', ['template' => "<div class='check field-signupform-check'>{input} Регистрируясь, вы соглашаетесь с \"<a href=\"#\">Условиями использования</a>\"</div>\n<div>{error}</div>"])->checkbox()->label(false)?>
         </div>
 
         <?= Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary form-control', 'name' => 'signup-button']) ?>
