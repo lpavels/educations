@@ -22,6 +22,17 @@ class m190124_110198_create_auth_item_table extends Migration
         ]);
         $this->addCommentOnTable('auth_item','Роли пользователей');
 
+        $this->insert('auth_item', [
+            'name' => 'admin',
+            'description' => 'admin',
+            'status' => '1',
+        ]);
+        $this->insert('auth_item', [
+            'name' => 'user',
+            'description' => 'Пользователь',
+            'status' => '1',
+        ]);
+
     }
 
     /**

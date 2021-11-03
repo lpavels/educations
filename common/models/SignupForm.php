@@ -69,22 +69,14 @@ class SignupForm extends Model
                     ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                     ['user' => $user])
                 ->setTo($user->email)
-                ->setFrom('larin.pasha@mail.ru')
+                ->setFrom(Yii::$app->params['senderEmail'])
                 ->setSubject('Подтвердите регистрацию на сайте')
                 ->send();
             if (!$message){
                 throw new \Swift_TransportException('Письмо недоставлено.');
             }
 
-            $users_log = new UsersLog();
-            $users_log->user_id = $user->id;
-            $users_log->user = $user->id;
-            $users_log->table = 'user';
-            $users_log->primary_key = $user->id;
-            $users_log->comment = 'Регистрация пользователя';
-            $users_log->created_at = date("Y-m-d H:i:s");
-            $users_log->created_ip = Yii::$app->ComponetSite->get_ip();
-            $users_log->save();
+            Yii::$app->compModel->userLog($user->id,$user->id,'user',$user->id,'Регистрация пользователя');
 
             return true;
         } catch (\Swift_TransportException $error){
@@ -108,7 +100,7 @@ class SignupForm extends Model
                     ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
                     ['user' => $user])
                 ->setTo($user->email)
-                ->setFrom('larin.pasha@mail.ru')
+                ->setFrom(Yii::$app->params['senderEmail'])
                 ->setSubject('Изменение пароля')
                 ->send();
             if (!$message){
@@ -129,15 +121,7 @@ class SignupForm extends Model
         $user->generateAuthKey(); //изменение auth_key для выхода со всех устройств
         $user->removePasswordResetToken();
 
-        $userLog = new UsersLog();
-        $userLog->user_id=Yii::$app->user->id;
-        $userLog->user=Yii::$app->user->id;
-        $userLog->table='user';
-        $userLog->primary_key=$user->id;
-        $userLog->comment='Изменение пароля через раздел "Забыли пароль"';
-        $userLog->save();
-
-
+        Yii::$app->compModel->userLog($user->id,$user->id,'user',$user->id,'Изменение пароля через раздел "Забыли пароль"');
         return $user->save(false);
     }
 

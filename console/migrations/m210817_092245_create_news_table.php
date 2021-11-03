@@ -9,8 +9,8 @@ class m210817_092245_create_news_table extends Migration
         $this->createTable('{{%news}}', [
             'id' => $this->primaryKey(),
             'theme_training_program_id' => $this->integer()->notNull()->comment('Тема обучающей программы (метка новости)'),
-            'news_categogy_id' => $this->integer()->notNull()->comment('Категория новости (ютуб, важно, новость)'),
-            'theme' => $this->string(255)->notNull()->unique()->comment('Тема новости'),
+            'news_category_id' => $this->integer()->notNull()->comment('Категория новости (ютуб, важно, новость)'),
+            'theme' => $this->string(255)->notNull()->comment('Тема новости'),
             'small_text' => $this->string(255)->notNull()->unique()->comment('Краткая новость'),
             'full_text' => $this->text()->notNull()->unique()->comment('Полная новость'),
             'sequence_number' => $this->integer()->notNull()->comment('Порядковый номер новости'),
@@ -39,16 +39,16 @@ class m210817_092245_create_news_table extends Migration
 
         // creates index for column `category_id`
         $this->createIndex(
-            'idx-news-news_categogy_id',
+            'idx-news-news_category_id',
             'news',
-            'news_categogy_id'
+            'news_category_id'
         );
 
         // add foreign key for table `category`
         $this->addForeignKey(
-            'fk-news-news_categogy_id',
+            'fk-news-news_category_id',
             'news',
-            'news_categogy_id',
+            'news_category_id',
             'news_category',
             'id',
             'CASCADE'
@@ -61,13 +61,13 @@ class m210817_092245_create_news_table extends Migration
 
         // drops foreign key for table ``
         $this->dropForeignKey(
-            'fk-news-news_categogy_id',
+            'fk-news-news_category_id',
             'news'
         );
 
         // drops index for column ``
         $this->dropIndex(
-            'idx-news-news_categogy_id',
+            'idx-news-news_category_id',
             'news',
         );
     }

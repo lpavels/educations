@@ -2,11 +2,10 @@
 
 /* @var $content string */
 
-
-use common\models\AuthItem;
 use yii\helpers\Html;
+use yii\web\View;
 
-$userRole = AuthItem::findOne(['id'=>Yii::$app->user->identity->auth_item_id])->name;
+$flash = Yii::$app->session->getAllFlashes();
 ?>
 <?php $this->beginPage() ?>
     <!DOCTYPE html>
@@ -19,18 +18,46 @@ $userRole = AuthItem::findOne(['id'=>Yii::$app->user->identity->auth_item_id])->
         <?php $this->head() ?>
 
         <!-- App favicon -->
-<!--        <link rel="shortcut icon" href="assets_copy/images/favicon.ico">-->
+        <!--        <link rel="shortcut icon" href="assets_copy/images/favicon.ico">-->
 
-<!--        <link href="assets_copy/plugins/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">-->
+        <!--        <link href="assets_copy/plugins/jvectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet">-->
 
         <!-- App css -->
-        <link href="assets_copy/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets_copy/css/icons.css" rel="stylesheet" type="text/css" />
-        <link href="assets_copy/css/metismenu.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets_copy/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="assets_copy/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="assets_copy/css/icons.css" rel="stylesheet" type="text/css"/>
+        <link href="assets_copy/css/metismenu.min.css" rel="stylesheet" type="text/css"/>
+        <link href="assets_copy/css/style.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
     <?php $this->beginBody() ?>
+
+    <style>
+        .alert-message {
+            position: absolute;
+            z-index: 1000;
+            width: 60%;
+            margin-right: 20%;
+            margin-left: 20%;
+        }
+    </style>
+
+    <!-- Alert Start -->
+    <div class="alert-message text-center d-flex justify-content-center">
+        <?php if ($flash['error']) { ?>
+            <div class="alert alert-danger border-0 text-center" role="alert">
+                <?php echo Yii::$app->session->getFlash('error'); ?>
+            </div>
+        <?php } elseif ($flash['success']) { ?>
+            <div class="alert alert-success border-0 text-center" role="alert">
+                <?php echo Yii::$app->session->getFlash('success'); ?>
+            </div>
+        <?php } elseif ($flash['warning']) { ?>
+            <div class="alert alert-warning border-0 text-center" role="alert">
+                <?php echo Yii::$app->session->getFlash('warning'); ?>
+            </div>
+        <?php } ?>
+    </div>
+    <!-- Alert End -->
 
     <!-- Top Bar Start -->
     <div class="topbar">
@@ -82,8 +109,8 @@ $userRole = AuthItem::findOne(['id'=>Yii::$app->user->identity->auth_item_id])->
                 <img src="assets_copy/images/users/user-1.jpg" alt="user" class="rounded-circle img-thumbnail mb-1">
                 <span class="online-icon"><i class="mdi mdi-record text-success"></i></span>
                 <div class="media-body">
-                    <h5 class="text-light"><?=Yii::$app->user->identity->username ?> </h5>
-                    <p class="text-light" style="font-size: 10px"><?= $userRole ?> </p>
+                    <h5 class="text-light"><?= Yii::$app->user->identity->username ?> </h5>
+                    <p class="text-light" style="font-size: 10px"><?= Yii::$app->compModel->getUserRole() ?> </p>
                 </div>
             </div>
             <!-- Page-Title -->
@@ -115,22 +142,26 @@ $userRole = AuthItem::findOne(['id'=>Yii::$app->user->identity->auth_item_id])->
 
                     <li class="menu-title">Административные действия</li>
 
-                    <li><a href="user"><i class="mdi dripicons-user"></i><span>Пользователи</span></a></li>
-                    <li><a href="news"><i class="mdi mdi-monitor"></i><span>Новости</span></a></li>
-
+                    <li><a href="users"><i class="mdi dripicons-user"></i><span>Пользователи</span></a></li>
 
                     <li>
-                        <a href="javascript: void(0);"><i class="mdi dripicons-user"></i><span>Пользователи</span><span
-                                    class="badge badge-danger badge-pill float-right">9+</span></a>
-                        <ul class="nav-second-level" aria-expanded="false">
-                            <li><a href="#">Dashboard 1</a></li>
-                            <li><a href="#">Dashboard 2</a></li>
-                            <li><a href="#">Dashboard 3</a></li>
-                        </ul>
+                        <a href="javascript: void(0);"><i class="mdi mdi-newspaper"></i><span>Новости</span>
+                            <!--                            <span class="badge badge-danger badge-pill float-right">9+</span></a>-->
+                            <ul class="nav-second-level" aria-expanded="false">
+                                <li><a href="news">Новости</a></li>
+                                <li><a href="news-category">Категории новостей</a></li>
+                            </ul>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);"><i class="mdi mdi-newspaper"></i><span>Обучающие программы</span>
+                            <ul class="nav-second-level" aria-expanded="false">
+                                <li><a href="#">---</a></li>
+                                <li><a href="training-theme-program">Темы программ</a></li>
+                            </ul>
                     </li>
 
                     <li class="menu-title">More</li>
-
 
                 </ul>
             </div>
@@ -159,15 +190,15 @@ $userRole = AuthItem::findOne(['id'=>Yii::$app->user->identity->auth_item_id])->
     <script src="assets_copy/js/waves.min.js"></script>
     <script src="assets_copy/js/jquery.slimscroll.min.js"></script>
 
-<!--    <script src="assets_copy/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>-->
-<!--    <script src="assets_copy/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>-->
+    <!--    <script src="assets_copy/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>-->
+    <!--    <script src="assets_copy/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>-->
 
-<!--    <script src="assets_copy/plugins/moment/moment.js"></script>-->
-<!--    <script src="assets_copy/plugins/apexcharts/apexcharts.min.js"></script>-->
-<!--    <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>-->
-<!--    <script src="https://apexcharts.com/samples/assets/series1000.js"></script>-->
-<!--    <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>-->
-<!--    <script src="assets_copy/pages/jquery.dashboard.init.js"></script>-->
+    <!--    <script src="assets_copy/plugins/moment/moment.js"></script>-->
+    <!--    <script src="assets_copy/plugins/apexcharts/apexcharts.min.js"></script>-->
+    <!--    <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>-->
+    <!--    <script src="https://apexcharts.com/samples/assets/series1000.js"></script>-->
+    <!--    <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>-->
+    <!--    <script src="assets_copy/pages/jquery.dashboard.init.js"></script>-->
 
     <!-- App js -->
     <script src="assets_copy/js/app.js"></script>
@@ -175,4 +206,17 @@ $userRole = AuthItem::findOne(['id'=>Yii::$app->user->identity->auth_item_id])->
     <?php $this->endBody() ?>
     </body>
     </html>
-<?php $this->endPage();
+
+<?php
+$js = <<< JS
+function hideAlert() {
+  $('.alert-message').remove();
+}
+
+$(document).ready(function() {
+  setTimeout(hideAlert, 7777);
+})
+JS;
+$this->registerJs($js, View::POS_READY);
+
+$this->endPage();

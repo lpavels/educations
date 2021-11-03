@@ -5,10 +5,8 @@ namespace backend\controllers;
 use common\models\LoginForm;
 use common\models\SignupForm;
 use common\models\User;
-use common\models\UsersLog;
 use Yii;
 use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
 
 class SiteController extends Controller
@@ -20,12 +18,22 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index','login','signup','welcome','email-confirm','confirm-email','forgot-password','reset-password','confirm-password'],
+                        'actions' => [
+                            'index',
+                            'login',
+                            'signup',
+                            'welcome',
+                            'email-confirm',
+                            'confirm-email',
+                            'forgot-password',
+                            'reset-password',
+                            'confirm-password'
+                        ],
                         'allow' => true,
                         'roles' => ['?'], #гость
                     ],
                     [
-                        'actions' => ['logout','error','index-auth','index'],
+                        'actions' => ['logout', 'error', 'index-auth', 'index'],
                         'allow' => true,
                         'roles' => ['@'], #авторизованный пользователь
                     ],
@@ -42,20 +50,19 @@ class SiteController extends Controller
 
     public function actions()
     {
-        if (!Yii::$app->user->isGuest) return $this->actionIndexAuth();
-        else return $this->actionIndexAuth();
+        //if (!Yii::$app->user->isGuest) return $this->actionIndexAuth();
+        //else return $this->actionIndexAuth();
 
-        //return [
-        //    'error' => [
-        //        'class' => 'yii\web\ErrorAction',
-        //    ],
-        //];
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
     }
 
     public function actionIndex()
     {
-        if (!Yii::$app->user->isGuest)
-        {
+        if (!Yii::$app->user->isGuest) {
             return $this->actionIndexAuth();
         }
 
@@ -65,8 +72,7 @@ class SiteController extends Controller
 
     public function actionIndexAuth()
     {
-        if (Yii::$app->user->isGuest)
-        {
+        if (Yii::$app->user->isGuest) {
             return $this->actionIndex();
         }
         //$model = News::findAll();
@@ -80,14 +86,16 @@ class SiteController extends Controller
         $this->layout = 'window';
 
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup())
-        {
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             return $this->actionWelcome();
         }
 
-        return $this->render('signup', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'signup',
+            [
+                'model' => $model,
+            ]
+        );
     }
 
     public function actionWelcome() #страница добро пожаловать
@@ -100,8 +108,7 @@ class SiteController extends Controller
     public function actionEmailConfirm($username, $token) //подтверждение почты
     {
         $user = User::findOne(['username' => $username, 'verification_token' => $token]);
-        if (!$user)
-        {
+        if (!$user) {
             Yii::$app->session->setFlash('warning', 'Произошла ошибка, ссылка недействительна');
             return $this->actionConfirmEmail();
         }
@@ -109,21 +116,13 @@ class SiteController extends Controller
         $user->verification_token = null;
         $user->status = User::STATUS_ACTIVE;
         $user->auth_item_id = User::ROLE_DEFAULT;
-        if (!$user->save())
-        {
-            Yii::$app->session->setFlash('error', 'Произошла ошибка');
+        if ($user->save()) {
+            Yii::$app->compModel->userLog($user->id, $user->id, 'user', $user->id, 'Электронная почта подтверждена');
+
+            Yii::$app->session->setFlash('success', 'Электронная почта подтверждена');
             return $this->actionConfirmEmail();
         }
-
-        $userLog = new UsersLog();
-        $userLog->user_id=Yii::$app->user->id;
-        $userLog->user=Yii::$app->user->id;
-        $userLog->table='user';
-        $userLog->primary_key=$user->id;
-        $userLog->comment='Электронная почта подтверждена и назначена роль пользователя';
-        $userLog->save();
-
-        Yii::$app->session->setFlash('success', 'Электронная почта подтверждена');
+        Yii::$app->session->setFlash('error', 'Произошла ошибка');
         return $this->actionConfirmEmail();
     }
 
@@ -132,21 +131,24 @@ class SiteController extends Controller
         $this->layout = 'window';
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login())
-        {
-            return $this->goBack();
-        }
-        elseif ($model->load(Yii::$app->request->post()) && !$model->login())
-        {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            return $this->redirect('index-auth');
+        } elseif ($model->load(Yii::$app->request->post()) && !$model->login()) {
+            return $this->render(
+                'login',
+                [
+                    'model' => $model,
+                ]
+            );
         }
         $model->password = '';
 
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return $this->render(
+            'login',
+            [
+                'model' => $model,
+            ]
+        );
     }
 
     public function actionConfirmEmail() //confirm email
@@ -161,43 +163,42 @@ class SiteController extends Controller
 
         $model = new SignupForm();
 
-        if ($post = Yii::$app->request->post()['SignupForm'])
-        {
-            if ($post['username'] != '' && $post['email'] != '')
-            {
+        if ($post = Yii::$app->request->post()['SignupForm']) {
+            if ($post['username'] != '' && $post['email'] != '') {
                 $user = User::findOne(['username' => $post['username'], 'email' => $post['email']]);
-            }
-            elseif ($post['username'] != '')
-            {
+            } elseif ($post['username'] != '') {
                 $user = User::findOne(['username' => $post['username']]);
-            }
-            elseif ($post['email'] != '')
-            {
+            } elseif ($post['email'] != '') {
                 $user = User::findOne(['email' => $post['email']]);
-            }
-            elseif ($post['username'] == '' && $post['email'] == '')
-            {
+            } elseif ($post['username'] == '' && $post['email'] == '') {
                 Yii::$app->session->setFlash('error', 'Вы не ввели логин или электронную почту');
                 return $this->redirect('forgot-password');
+            } else {
+                throw new \Exception('Произошла ошибка.');
             }
-            else throw new \Exception('Произошла ошибка.');
 
-            if (!$user)
-            {
+            if (!$user) {
                 Yii::$app->session->setFlash('error', 'Пользователь не найден.');
                 return $this->redirect('forgot-password');
             }
 
-            $hideEmail = substr($user->email, 0, 3) . '******' . substr($user->email, -8, strpos($user->email, '@')); #скрытие полного адреса электронной почты
+            $hideEmail = substr($user->email, 0, 3) . '******' . substr(
+                    $user->email,
+                    -8,
+                    strpos($user->email, '@')
+                ); #скрытие полного адреса электронной почты
 
             $model->forgotPassword($user);
 
             return $this->actionConfirmPassword(1, $hideEmail);
         }
 
-        return $this->render('forgot-password', [
-            'model' => $model
-        ]);
+        return $this->render(
+            'forgot-password',
+            [
+                'model' => $model
+            ]
+        );
     }
 
     public function actionResetPassword($username, $token) //страница изменения пароля
@@ -205,41 +206,37 @@ class SiteController extends Controller
         $this->layout = 'window';
 
         $user = User::findOne(['username' => $username, 'password_reset_token' => $token]);
-        if (!$user)
-        {
+        if (!$user) {
             Yii::$app->session->setFlash('warning', 'Произошла ошибка, ссылка недействительна');
             return $this->actionConfirmPassword(2);
         }
 
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->resetPassword($user))
-        {
+        if ($model->load(Yii::$app->request->post()) && $model->resetPassword($user)) {
             Yii::$app->session->setFlash('success', 'Пароль изменён.');
             return $this->actionConfirmPassword(3);
         }
 
-        return $this->render('reset-password',
-            ['model' => $model]);
+        return $this->render(
+            'reset-password',
+            ['model' => $model]
+        );
     }
 
     public function actionConfirmPassword($status = 1, $hideEmail = false) //confirm password
     {
         $this->layout = 'window';
 
-        if ($status == 1)
-        {
-            Yii::$app->session->setFlash('success2', 'На ' . $hideEmail . ' была отправлена интрукция по смене пароля.');
-        }
-        elseif ($status == 2)
-        {
+        if ($status == 1) {
+            Yii::$app->session->setFlash(
+                'success2',
+                'На ' . $hideEmail . ' была отправлена интрукция по смене пароля.'
+            );
+        } elseif ($status == 2) {
             Yii::$app->session->setFlash('warning', 'Ссылка недействительна.');
-        }
-        elseif ($status == 3)
-        {
+        } elseif ($status == 3) {
             Yii::$app->session->setFlash('success', 'Пароль изменён.');
-        }
-        else
-        {
+        } else {
             Yii::$app->session->setFlash('error', 'Произошла ошибка.');
         }
 

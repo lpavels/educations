@@ -113,3 +113,18 @@
 @import "check-radio";
 @import "dashboard";
 @import "account-pages";
+
+
+
+h1.title-page{
+  color: #FFFFFF;
+  font-size: 24pt;
+  text-align: center
+}
+
+@media (max-width: 1024px) {
+  h1.title-page{
+    color: #0b0b0b;
+    font-size: 20px;
+  }
+}

@@ -14,7 +14,8 @@ class m210901_160524_create_blocked_users_table extends Migration
     {
         $this->createTable('{{%blocked_users}}', [
             'id' => $this->primaryKey(),
-            'user_id' => $this->integer()->notNull()->comment('Кто за-/разблокирован'),
+            'user_id' => $this->integer()->notNull()->comment('Кто за-/разблокировал'),
+            'user' => $this->integer()->notNull()->comment('Кто за-/разблокирован'),
             'reason' => $this->string()->notNull()->comment('Причина раз-/блокировки'),
             'comment' => $this->string()->notNull()->comment('Комментарий для администрации'),
             'status' => $this->boolean()->notNull()->comment('0 - разблокирован, 1 - заблокирован'),
@@ -25,15 +26,32 @@ class m210901_160524_create_blocked_users_table extends Migration
         // creates index for column `user_id`
         $this->createIndex(
             'idx-blocked_users-user_id',
-            'users_log',
+            'blocked_users',
             'user_id'
         );
 
         // add foreign key for table `admins_log`
         $this->addForeignKey(
             'fk-blocked_users-user_id',
-            'users_log',
+            'blocked_users',
             'user_id',
+            'user',
+            'id',
+            'CASCADE'
+        );
+
+        // creates index for column `user_id`
+        $this->createIndex(
+            'idx-blocked_users-user',
+            'blocked_users',
+            'user'
+        );
+
+        // add foreign key for table `admins_log`
+        $this->addForeignKey(
+            'fk-blocked_users-user',
+            'blocked_users',
+            'user',
             'user',
             'id',
             'CASCADE'
@@ -46,5 +64,29 @@ class m210901_160524_create_blocked_users_table extends Migration
     public function safeDown()
     {
         $this->dropTable('{{%blocked_users}}');
+
+        // drops index for column ``
+        $this->dropIndex(
+            'idx-blocked_users-user_id',
+            'blocked_users'
+        );
+
+        // drops foreign key for table ``
+        $this->dropForeignKey(
+            'fk-blocked_users-user_id',
+            'blocked_users'
+        );
+
+        // drops index for column ``
+        $this->dropIndex(
+            'idx-blocked_users-user',
+            'blocked_users'
+        );
+
+        // drops foreign key for table ``
+        $this->dropForeignKey(
+            'fk-blocked_users-user',
+            'blocked_users'
+        );
     }
 }

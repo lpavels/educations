@@ -232,12 +232,51 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    public function getAuthItem($u_id)
+    public function deleteUser() #Изменение статута пользователя на "Удалён"
+    {
+        $this->status = self::STATUS_DELETED;
+        if($this->save()){
+
+            Yii::$app->session->setFlash('success', 'Пользователю присвоен статус "Удалён"');
+        }
+    }
+
+    public function blockUser() #Изменение статута пользователя на "Заблокирован"
+    {
+        $this->status = self::STATUS_BLOCKED;
+        if($this->save()){
+
+            Yii::$app->session->setFlash('success', 'Пользователю присвоен статус "Заблокирован"');
+        }
+    }
+
+    public function unblockUser() #Изменение статута пользователя на "Активен"
+    {
+        $this->status = self::STATUS_ACTIVE;
+        if($this->save()){
+            Yii::$app->session->setFlash('success', 'Пользователю присвоен статус "Разблокирован"');
+        }
+    }
+
+    public function getAuthItem($u_id) #описание роли пользователя
     {
         return AuthItem::findOne($u_id)->description;
     }
-    public function getAuthRole()
+    public function getAuthRole() #Название роли пользователя
     {
         return AuthItem::findOne(Yii::$app->user->id)->name;
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'auth_item_id' => 'Роль',
+            'key_login' => 'Ключ',
+            'username' => 'Имя пользователя',
+            'email' => 'e-mail',
+            'status' => 'Статус',
+            'created_at' => 'Дата регистрации',
+        ];
     }
 }
