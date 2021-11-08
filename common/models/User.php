@@ -26,9 +26,27 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
+    const STATUS_BLOCKED = 5;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
+    const ROLE_DEFAULT = 2; #пользователь
 
+
+    public static function userStatus()
+    {
+        return [
+            self::STATUS_DELETED => 'Удален',
+            self::STATUS_BLOCKED => 'Заблокирован',
+            self::STATUS_INACTIVE => 'Почта не подтверждена',
+            self::STATUS_ACTIVE => 'Активен',
+        ];
+    }
+
+    public static function getUserStatus($id, $default = 'unknown')
+    {
+        $role = static::userStatus();
+        return isset($role[$id]) ? $role[$id] : $default;
+    }
 
     /**
      * {@inheritdoc}
@@ -44,7 +62,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            //TimestampBehavior::className(),
         ];
     }
 
@@ -55,7 +73,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_BLOCKED, self::STATUS_DELETED]],
         ];
     }
 
@@ -83,7 +101,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username/*, 'status' => self::STATUS_ACTIVE*/]);
     }
 
     /**
@@ -94,7 +112,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByPasswordResetToken($token)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
+        if (!static::isPasswordResetTokenValid($token))
+        {
             return null;
         }
 
@@ -110,7 +129,8 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $token verify email token
      * @return static|null
      */
-    public static function findByVerificationToken($token) {
+    public static function findByVerificationToken($token)
+    {
         return static::findOne([
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
@@ -125,11 +145,12 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function isPasswordResetTokenValid($token)
     {
-        if (empty($token)) {
+        if (empty($token))
+        {
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
@@ -209,5 +230,53 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    public function deleteUser() #Изменение статута пользователя на "Удалён"
+    {
+        $this->status = self::STATUS_DELETED;
+        if($this->save()){
+
+            Yii::$app->session->setFlash('success', 'Пользователю присвоен статус "Удалён"');
+        }
+    }
+
+    public function blockUser() #Изменение статута пользователя на "Заблокирован"
+    {
+        $this->status = self::STATUS_BLOCKED;
+        if($this->save()){
+
+            Yii::$app->session->setFlash('success', 'Пользователю присвоен статус "Заблокирован"');
+        }
+    }
+
+    public function unblockUser() #Изменение статута пользователя на "Активен"
+    {
+        $this->status = self::STATUS_ACTIVE;
+        if($this->save()){
+            Yii::$app->session->setFlash('success', 'Пользователю присвоен статус "Разблокирован"');
+        }
+    }
+
+    public function getAuthItem($u_id) #описание роли пользователя
+    {
+        return AuthItem::findOne($u_id)->description;
+    }
+    public function getAuthRole() #Название роли пользователя
+    {
+        return AuthItem::findOne(Yii::$app->user->id)->name;
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'auth_item_id' => 'Роль',
+            'key_login' => 'Ключ',
+            'username' => 'Имя пользователя',
+            'email' => 'e-mail',
+            'status' => 'Статус',
+            'created_at' => 'Дата регистрации',
+        ];
     }
 }

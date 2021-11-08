@@ -1,32 +1,63 @@
 <?php
 
-/* @var $this yii\web\View */
-/* @var $form yii\bootstrap4\ActiveForm */
-/* @var $model \common\models\LoginForm */
+/* @var $model common\models\SignupForm */
 
-use yii\bootstrap4\ActiveForm;
-use yii\bootstrap4\Html;
+use yii\helpers\Html;
+use yii\web\View;
+use yii\widgets\ActiveForm;
 
-$this->title = 'Login';
+$this->title = 'Авторизация';
 ?>
-<div class="site-login">
-    <div class="mt-5 offset-lg-3 col-lg-6">
-        <h1><?= Html::encode($this->title) ?></h1>
 
-        <p>Please fill out the following fields to login:</p>
-
-        <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
-
-            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
-            <?= $form->field($model, 'password')->passwordInput() ?>
-
-            <?= $form->field($model, 'rememberMe')->checkbox() ?>
-
-            <div class="form-group">
-                <?= Html::submitButton('Login', ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']) ?>
-            </div>
-
-        <?php ActiveForm::end(); ?>
+<!-- Log In page -->
+<div class="div-window site-login">
+    <div class="row">
+        <div class="logo col-2">
+            <a href="/"><img src="asset/images/logo-nii.png" height="55" alt="logo"></a>
+        </div>
+        <div class="logo-text col-10">
+            <h4 class="mt-0 mb-1">Авторизация</h4>
+            <p class="text-muted mb-0">Войдите в систему для прохождения обучения.</p>
+        </div>
     </div>
+
+    <?php $form = ActiveForm::begin(['id' => 'form-login']); ?>
+    <div class="input-form">
+        <div class="icons"><i class="mdi mdi-account-outline"></i></div>
+        <?= $form->field($model, 'username', ['options' => ['class' => 'input-window']])->textInput(['class' => 'form-control', 'placeholder' => 'Введите логин','autofocus' => true])->label('Логин') ?>
+    </div>
+
+    <div class="input-form">
+        <div class="icons"><i class="mdi mdi-lock"></i></div>
+        <?= $form->field($model, 'password', ['options' => ['class' => 'input-window']])->passwordInput(['class' => 'form-control', 'placeholder' => 'Введите пароль'/*,'autofocus' => true*/])->label('Пароль') ?>
+    </div>
+
+    <div class="input-form">
+        <div class="col-8"></div>
+        <div class="col-4 text-center"><a href="forgot-password" class="text-muted font-13 fst-italic"><i class="mdi mdi-lock"></i> Забыли пароль?</a></div>
+    </div>
+
+    <?= Html::submitButton('Авторизоваться', ['class' => 'btn btn-primary form-control', 'name' => 'login-button']) ?>
+
+    <?php ActiveForm::end(); ?>
+
+    <hr>
+    <div class="m-1 text-center bg-light p-1 text-primary">
+        <h6>Вы еще не зарегистрированы?</h6>
+        <a href="signup" class="btn btn-primary m-3 btn-rounding">Регистрация</a>
+    </div>
+
 </div>
+<!-- End Log In page -->
+
+<?php
+$js = <<< JS
+$('form').on('beforeSubmit', function(){
+    var form = $(this);
+    var submit = form.find(':submit');
+    submit.html('<span class="fa fa-spin fa-spinner"></span> Пожалуйста, подождите...');
+    submit.prop('disabled', true);
+});
+JS;
+$this->registerJs($js, View::POS_READY);
+?>
