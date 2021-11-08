@@ -14,24 +14,18 @@ class m130524_201442_init extends Migration
 
         $this->createTable('{{%user}}', [
             'id' => $this->primaryKey(),
-            'key_login' => $this->string()->notNull()->unique()->comment('Идентификационный номер'),
-            'login' => $this->string()->notNull()->unique()->comment('Логин'),
-            'email' => $this->string()->notNull()->unique()->comment('Электронная почта (необходима для восстановления'),
-            'status' => $this->smallInteger()->notNull()->defaultValue(0),
-            'created_at' => $this->timestamp()->notNull(),
-            'updated_at' => $this->timestamp(),
+            'auth_item_id' => $this->integer()->comment('id роли пользователя'),
+            'key_login' => $this->string()->unique()->comment('Идентификационный номер'),
+            'username' => $this->string()->notNull()->unique()->comment('Логин'),
+            'email' => $this->string()->notNull()->unique()->comment('Электронная почта (необходима для восстановления)'),
+            'status' => $this->smallInteger()->notNull()->defaultValue(0)->comment('Статус пользователя (активен/неактивен)'),
+            'created_at' => $this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
+            'updated_at' => $this->timestamp()->defaultValue(null)->append('ON UPDATE CURRENT_TIMESTAMP'),
             'auth_key' => $this->string(32)->notNull(),
             'password_hash' => $this->string()->notNull(),
             'password_reset_token' => $this->string()->unique(),
-
-            #'last_name' => $this->string()->notNull()->comment('Фамилия'), todo вынести в отдельную таблицу
-            #'first_name' => $this->string()->notNull()->comment('Имя'), todo вынести в отдельную таблицу
-            #'middle_name' => $this->string()->notNull()->comment('Отчество'), todo вынести в отдельную таблицу
-            #'year_birth' => $this->integer()->notNull()->comment('Год рождения'), todo вынести в отдельную таблицу
-            #'training_id' => $this->integer()->notNull()->comment('ID обучающей программы '), todo вынести в отдельную таблицу
-            #'organization_id' => $this->integer()->notNull()->comment('ID организации'), todo вынести в отдельную таблицу
-            #'status_change_reason' => $this->smallInteger()->notNull()->comment('Причина изменения статуса ????'), todo вынести в отдельную таблицу
         ], $tableOptions);
+        $this->addCommentOnTable('user','Таблица пользователей');
     }
 
     public function down()
